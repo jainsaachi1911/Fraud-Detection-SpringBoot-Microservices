@@ -1,6 +1,5 @@
 # Fraud Detection in Digital Transactions
 
-## Introduction
 As digital transactions increase, so do fraud risks. This project aims to develop a **real-time fraud detection system** using **AI-based analytics, microservices, and event-driven architecture** to prevent fraudulent transactions dynamically.
 
 ## Features
