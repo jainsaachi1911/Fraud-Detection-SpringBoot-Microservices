@@ -15,11 +15,9 @@ As digital transactions increase, so do fraud risks. This project aims to develo
 - **Backend:** Spring Boot (Java)
 - **Machine Learning:** Python (Scikit-learn, TensorFlow, PyTorch)
 - **Messaging Queue:** Apache Kafka
-- **Caching:** Redis
 - **Database:** MySQL
 - **API Gateway:** Spring Cloud Gateway
 - **Service Discovery:** Eureka Server
-- **Notifications:** Twilio/SendGrid
 
 ## Expected Outcome
 - A fully functional real-time fraud detection system.
