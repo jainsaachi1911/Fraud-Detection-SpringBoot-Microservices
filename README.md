@@ -24,20 +24,6 @@ As digital transactions increase, so do fraud risks. This project aims to develo
 - Adaptive machine learning models that improve over time.
 - Secure and high-performance system capable of handling large transaction volumes.
 
-## Setup Instructions
-1. Clone the repository:
-   ```sh
-   git clone <repository-url>
-   cd <repository-folder>
-   ```
-2. Configure **MySQL, Kafka, and Redis**.
-3. Set up **Spring Boot services** and **ML models**.
-4. Run the services in order:
-   - **Eureka Server**
-   - **API Gateway**
-   - **Microservices** (User, Transaction, Fraud Detection, Notification)
-5. Monitor logs and alerts for fraudulent activities.
-
 ## Contributors
 - Saachi Jain
 - Pragya Ghosh
