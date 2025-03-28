@@ -29,4 +29,5 @@ As digital transactions increase, so do fraud risks. This project aims to develo
 - Pragya Ghosh
 - Prakhar Gupta
 - Shriya Sankhe
+
 - **Faculty Mentor:** Rajiv Gupta
