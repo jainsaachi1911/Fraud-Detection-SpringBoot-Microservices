@@ -2,7 +2,9 @@ package com.example.service;
 
 import com.example.entity.User;
 import com.example.repo.UserRepo;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.sql.Timestamp;
 
@@ -19,8 +21,16 @@ public class UserService {
         return userRepo.save(user);
     }
 
-    public User getUser(int id){
-        return userRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    class UserNotFoundException extends RuntimeException {
+        public UserNotFoundException(String message) {
+            super(message);
+        }
     }
+    public User getUser(int id) {
+        return userRepo.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
+    }
+
+
 }

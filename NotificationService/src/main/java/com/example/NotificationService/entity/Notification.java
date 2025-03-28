@@ -16,8 +16,9 @@ public class Notification {
     private int userId;
     private int alertId;
 
-    public Notification(int id, int userId, int alertId, String message, LocalDateTime sentAt, String status) {
-        this.id = id;
+    public Notification() {}
+
+    public Notification(int userId, int alertId, String message, LocalDateTime sentAt, String status) {
         this.userId = userId;
         this.alertId = alertId;
         this.message = message;
@@ -29,53 +30,25 @@ public class Notification {
     private LocalDateTime sentAt;
     private String status;
 
-    public String getStatus() {
-        return status;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public int getUserId() { return userId; }
+    public void setUserId(int userId) { this.userId = userId; }
 
-    public LocalDateTime getSentAt() {
-        return sentAt;
-    }
+    public int getAlertId() { return alertId; }
+    public void setAlertId(int alertId) { this.alertId = alertId; }
 
-    public void setSentAt(LocalDateTime sentAt) {
-        this.sentAt = sentAt;
-    }
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
 
-    public String getMessage() {
-        return message;
-    }
+    public LocalDateTime getSentAt() { return sentAt; }
+    public void setSentAt(LocalDateTime sentAt) { this.sentAt = sentAt; }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public int getAlertId() {
-        return alertId;
-    }
 
-    public void setAlertId(int alertId) {
-        this.alertId = alertId;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
 
 

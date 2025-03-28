@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class NotificationService {
@@ -18,5 +19,9 @@ public class NotificationService {
     public Notification createNotification(Notification notification){
         notification.setSentAt(LocalDateTime.now());
         return notificationRepo.save(notification);
+    }
+
+    public List<Notification> getAllNotifications() {
+        return notificationRepo.findAll();
     }
 }

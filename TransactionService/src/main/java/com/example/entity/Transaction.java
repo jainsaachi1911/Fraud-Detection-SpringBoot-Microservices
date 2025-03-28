@@ -22,7 +22,7 @@ public class Transaction {
 
     public Transaction(){}
 
-    public Transaction(int id,int accountId,BigDecimal amount, Timestamp timestamp, String string,String location, int merchantId){
+    public Transaction(int id, int accountId, BigDecimal amount, Timestamp timestamp, String status, String location, int merchantId) {
         this.id = id;
         this.accountId = accountId;
         this.amount = amount;
@@ -31,6 +31,7 @@ public class Transaction {
         this.location = location;
         this.merchantId = merchantId;
     }
+
 
     public int getId() { return id; }
 
