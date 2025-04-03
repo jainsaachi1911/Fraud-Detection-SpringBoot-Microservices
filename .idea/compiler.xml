@@ -9,6 +9,7 @@
         <module name="api-gateway" />
         <module name="NotificationService" />
         <module name="TransactionService" />
+        <module name="FraudDetectService" />
         <module name="UserService" />
         <module name="eureka-server" />
       </profile>
@@ -16,6 +17,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="FraudDetectService" options="-parameters" />
       <module name="NotificationService" options="-parameters" />
       <module name="TransactionService" options="-parameters" />
       <module name="UserService" options="-parameters" />
