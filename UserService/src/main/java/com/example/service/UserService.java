@@ -1,36 +1,23 @@
 package com.example.service;
 
 import com.example.entity.User;
-import com.example.repo.UserRepo;
+import com.example.repo.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Service
 public class UserService {
-    private final UserRepo userRepo;
+    @Autowired
+    private UserRepository userRepository;
 
-    public UserService(UserRepo userRepo) {
-        this.userRepo = userRepo;
-    }
-
-    public User createUser(User user){
-        user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        return userRepo.save(user);
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    class UserNotFoundException extends RuntimeException {
-        public UserNotFoundException(String message) {
-            super(message);
-        }
-    }
-    public User getUser(int id) {
-        return userRepo.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
-    }
-
+    public List<User> getAllUsers() { return userRepository.findAll(); }
+    public User getUser(Long id) { return userRepository.findById(id).orElse(null); }
+    public User saveUser(User user) { return userRepository.save(user); }
+    public void deleteUser(Long id) { userRepository.deleteById(id); }
 
 }

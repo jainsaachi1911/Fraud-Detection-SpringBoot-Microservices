@@ -1,64 +1,38 @@
 package com.example.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "transactions")
 public class Transaction {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private int accountId;
-    private BigDecimal amount;
-    private Timestamp timestamp;
-    private String status;
-    private String location;
-    private int merchantId;
+    private Long id;
 
-    public Transaction(){}
+    private Long userId;
+    private Double amount;
+    private String description;
+    private LocalDateTime timestamp;
+    private Boolean isFraud;
 
-    public Transaction(int id, int accountId, BigDecimal amount, Timestamp timestamp, String status, String location, int merchantId) {
-        this.id = id;
-        this.accountId = accountId;
-        this.amount = amount;
-        this.timestamp = timestamp;
-        this.status = status;
-        this.location = location;
-        this.merchantId = merchantId;
-    }
+    // Getters and setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
-    public int getId() { return id; }
+    public Double getAmount() { return amount; }
+    public void setAmount(Double amount) { this.amount = amount; }
 
-    public void setId(int id) { this.id = id; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public int getAccountId() { return accountId; }
+    public LocalDateTime getTimestamp() { return timestamp; }
+    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
 
-    public void setAccountId(int accountId) { this.accountId = accountId; }
-
-    public BigDecimal getAmount() { return amount; }
-
-    public void setAmount(BigDecimal amount) { this.amount = amount; }
-
-    public Timestamp getTimestamp() { return timestamp; }
-
-    public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
-
-    public String getStatus() { return status; }
-
-    public void setStatus(String status) { this.status = status; }
-
-    public String getLocation() { return location; }
-
-    public void setLocation(String location) { this.location = location; }
-
-    public int getMerchantId() { return merchantId; }
-
-    public void setMerchantId(int merchantId) { this.merchantId = merchantId; }
+    public Boolean getIsFraud() { return isFraud; }
+    public void setIsFraud(Boolean isFraud) { this.isFraud = isFraud; }
 }
-

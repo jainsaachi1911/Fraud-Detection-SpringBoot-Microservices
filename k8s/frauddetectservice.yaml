@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frauddetectservice-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frauddetectservice
+  template:
+    metadata:
+      labels:
+        app: frauddetectservice
+    spec:
+      containers:
+        - name: frauddetectservice
+          image: frauddetectservice:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8089
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frauddetectservice-service
+spec:
+  selector:
+    app: frauddetectservice
+  ports:
+    - protocol: TCP
+      port: 8089
+      targetPort: 8089
+  type: ClusterIP

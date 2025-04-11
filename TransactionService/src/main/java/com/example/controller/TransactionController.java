@@ -2,26 +2,30 @@ package com.example.controller;
 
 import com.example.entity.Transaction;
 import com.example.service.TransactionService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/transactions")
+@RequestMapping("/transact")
 public class TransactionController {
-    private final TransactionService transactionService;
 
+    @Autowired
+    private TransactionService transactionService;
 
-    public TransactionController(TransactionService transactionService) {
-        this.transactionService = transactionService;
+    @GetMapping
+    public List<Transaction> getAllTransactions() {
+        return transactionService.getAllTransactions();
     }
 
     @PostMapping
-    public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction){
-        return ResponseEntity.ok(transactionService.createTransaction(transaction));
+    public Transaction createTransaction(@RequestBody Transaction transaction) {
+        return transactionService.createTransaction(transaction);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Transaction> getTransaction(@PathVariable int id){
-        return ResponseEntity.ok(transactionService.getTransaction(id));
+    @DeleteMapping("/{id}")
+    public void deleteTransaction(@PathVariable Long id) {
+        transactionService.deleteTransaction(id);
     }
 }

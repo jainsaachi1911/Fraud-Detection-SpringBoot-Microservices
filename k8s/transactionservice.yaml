@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transactionservice-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transactionservice
+  template:
+    metadata:
+      labels:
+        app: transactionservice
+    spec:
+      containers:
+        - name: transactionservice
+          image: transactionservice:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8083
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: http://eureka-server:8761/eureka
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql:3306/transactiondb?useSSL=false&allowPublicKeyRetrieval=true
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: root
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transactionservice-service
+spec:
+  selector:
+    app: transactionservice
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8083
+  type: ClusterIP
