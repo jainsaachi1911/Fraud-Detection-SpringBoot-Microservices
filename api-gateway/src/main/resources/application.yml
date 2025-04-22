@@ -1,0 +1,107 @@
+# MA_Project_Practice 2/api-gateway/src/main/resources/application.yml
+server:
+  port: 3001
+  forward-headers-strategy: framework # Handle forwarded headers
+
+spring:
+  application:
+    name: api-gateway
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      # Default filters can sometimes help
+      # default-filters:
+      #  - name: Retry
+      #    args:
+      #      retries: 3
+      #      statuses:
+      #        - BAD_GATEWAY
+      #        - SERVICE_UNAVAILABLE
+      routes:
+        # == User Service Routes ==
+        - id: user-service-api-docs # Route for API Docs first
+          uri: lb://user-service
+          predicates:
+            - Path=/users/v3/api-docs/**
+          filters:
+            # Remove /users prefix
+            - RewritePath=/users(?<segment>/?.*), /$\{segment}
+        - id: user-service-swagger-ui # Single route for all swagger-ui paths
+          uri: lb://user-service
+          predicates:
+            # Match the base HTML file OR anything under the swagger-ui path
+            - Path=/users/swagger-ui.html, /users/swagger-ui/**
+          filters:
+            # Remove /users prefix consistently
+            - RewritePath=/users(?<segment>/?.*), /$\{segment}
+        - id: user-service-main # General API route LAST
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+          filters:
+            # Remove /users prefix so service gets /<id>, / etc.
+            - RewritePath=/users(?<segment>/?.*), /$\{segment}
+
+        # == Transaction Service Routes == (Apply same pattern if adding Swagger)
+        - id: transaction-service-main
+          uri: lb://transaction-service
+          predicates:
+            - Path=/transact/**
+          filters: # Add filter assuming /transact is class-level mapping in TransactionController
+            - RewritePath=/transact(?<segment>/?.*), /$\{segment}
+
+        # == Fraud Detect Service Routes == (Apply same pattern if adding Swagger)
+        - id: fraud-detect-service-main
+          uri: lb://fraud-detect-service
+          predicates:
+            - Path=/fraud/**
+          filters: # Add filter assuming /fraud is class-level mapping in FraudDetectionController
+            - RewritePath=/fraud(?<segment>/?.*), /$\{segment}
+
+        # == Notification Service Routes == (Apply same pattern if adding Swagger)
+        - id: notification-service-main
+          uri: lb://notification-service
+          predicates:
+            - Path=/notifications/**
+          filters: # Add filter assuming /notifications is class-level mapping in NotificationController
+            - RewritePath=/notifications(?<segment>/?.*), /$\{segment}
+
+
+  # Required for Spring Cloud Gateway load balancing
+  loadbalancer:
+    ribbon:
+      enabled: false
+
+# Eureka configuration (fetched from environment in docker-compose)
+eureka:
+  client:
+    registry-fetch-interval-seconds: 5
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka}
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+    # hostname: ${spring.application.name} # Optional
+
+# Logging (Keep TRACE/DEBUG settings if you want to try logging again)
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    reactor.netty: DEBUG
+    org.springframework.http.server.reactive: DEBUG
+    org.springframework.web.reactive: DEBUG
+
+# SpringDoc configuration (If you added the dependency to the gateway POM)
+springdoc:
+  swagger-ui:
+    enabled: false # Disable gateway's own swagger UI if present
+  api-docs:
+    enabled: false # Disable gateway's own api-docs if present
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" # Expose actuator endpoints

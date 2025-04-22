@@ -1,115 +1,125 @@
-version: '3.8'
+# MA_Project_Practice 2/docker-compose.yml
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql
     ports:
-      - "3307:3306"
+      - "3306:3306" # Map host port 3306 to container port 3306
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: 1234 # Set the root password for MySQL container
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # Run init script on start
     networks:
-      - backend
+      - fraud-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      # Corrected: Use the password set in environment (1234)
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-p1234" ]
       interval: 10s
-      timeout: 5s
+      timeout: 10s
       retries: 5
-      start_period: 20s
+      start_period: 30s
 
   eureka-server:
-    build: ./eureka-server
+    image: eureka-server:latest
     ports:
       - "8761:8761"
     networks:
-      - backend
+      - fraud-network
 
   api-gateway:
-    build: ./api-gateway
+    image: api-gateway:latest
     ports:
       - "3001:3001"
     depends_on:
       eureka-server:
         condition: service_started
-    networks:
-      - backend
-
-  UserService:
-    build: ./UserService
-    image: userservice
-    depends_on:
-      eureka-server:
-        condition: service_started
-      mysql:
-        condition: service_healthy
-
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/userdb
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
     networks:
-      - backend
+      - fraud-network
+    restart: on-failure
 
-  TransactionService:
-    build: ./TransactionService
-    image: transactionservice
+  user-service:
+    image: userservice:latest
+    ports:
+      - "8081:8081"
     depends_on:
-      eureka-server:
-        condition: service_started
       mysql:
         condition: service_healthy
-
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/transactiondb
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
-
-    networks:
-      - backend
-
-  FraudDetectService:
-    build: ./FraudDetectService
-    image: frauddetectservice
-    depends_on:
       eureka-server:
         condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/userdb?useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      # Corrected: Password must match MYSQL_ROOT_PASSWORD
+      SPRING_DATASOURCE_PASSWORD: 1234
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+    networks:
+      - fraud-network
+    restart: on-failure
 
+  transaction-service:
+    image: transactionservice:latest
+    ports:
+      - "8087:8087"
+    depends_on:
       mysql:
         condition: service_healthy
-
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/frauddetectiondb
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
-
-    networks:
-
-      - backend
-
-  NotificationService:
-    build: ./NotificationService
-    image: notificationservice
-    depends_on:
-
       eureka-server:
         condition: service_started
-      mysql:
-        condition: service_healthy
+      fraud-detect-service:
+        condition: service_started
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/notificationdb
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/transactiondb?useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      # Corrected: Password must match MYSQL_ROOT_PASSWORD
+      SPRING_DATASOURCE_PASSWORD: 1234
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
     networks:
-      - backend
+      - fraud-network
+    restart: on-failure
+
+  notification-service:
+    image: notificationservice:latest
+    ports:
+      - "8082:8082"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/notificationdb?useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      # Correct: Matches MYSQL_ROOT_PASSWORD
+      SPRING_DATASOURCE_PASSWORD: 1234
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+    networks:
+      - fraud-network
+    restart: on-failure
+
+  fraud-detect-service:
+    image: frauddetectservice:latest
+    ports:
+      - "8089:8089"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/frauddetectiondb?useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      # Correct: Matches MYSQL_ROOT_PASSWORD
+      SPRING_DATASOURCE_PASSWORD: 1234
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+    networks:
+      - fraud-network
+    restart: on-failure
+
+volumes:
+  mysql_data:
 
 networks:
-  backend:
+  fraud-network:
     driver: bridge
-
