@@ -1,30 +1,61 @@
-# Fraud Detection in Digital Transactions
+# Fraud Detection & User Management System
 
-As digital transactions increase, so do fraud risks. This project aims to develop a **condition-based fraud detection system** using **microservices, and event-driven architecture** to prevent fraudulent transactions dynamically.
+This project is a **Microservices-based Fraud Detection & User Management System** built using **Spring Boot Microservices** architecture. It includes several independent services that communicate with each other to manage users, detect fraud in transactions, notify users, and orchestrate everything through an **API Gateway** and **Service Discovery**.
 
-## Features
-- Real-time transaction processing and fraud detection.
-- Microservices architecture for scalability and modularity.
-- Event-driven processing using **Kafka**.
-- High performance and security with **Spring Boot, Redis, and JWT authentication**.
-- Instant fraud alerts via **SMS or email**.
+---
 
 ## Technologies Used
-- **Backend:** Spring Boot (Java)
-- **Messaging Queue:** Apache Kafka
-- **Database:** MySQL
-- **API Gateway:** Spring Cloud Gateway
-- **Service Discovery:** Eureka Server
 
-## Expected Outcome
-- A fully functional real-time fraud detection system.
-- Scalable microservices-based architecture.
-- Secure and high-performance system capable of handling large transaction volumes.
+1. **Spring Boot Microservices**
+2. **Docker**
+3. **Kubernetes**
+4. **MySQL**
+5. **Eureka**
+6. **API Gateway**
 
-## Contributors
-- Saachi Jain
-- Pragya Ghosh
-- Prakhar Gupta
-- Shriya Sankhe
+---
 
-- **Faculty Mentor:** Rajiv Gupta
+## Workflow
+
+1. **User Management Service**: 
+   - Manages user information such as name, email, and phone number.
+   - Registers new users, updates user information, and handles authentication.
+
+2. **Transaction Service**: 
+   - Handles transactions initiated by users.
+   - Sends transaction data to the **Fraud Detection Service** for analysis.
+
+3. **Fraud Detection Service**:
+   - Analyzes transaction data for fraudulent patterns using predefined rules or machine learning algorithms.
+   - Informs the **Notification Service** if fraud is detected.
+
+4. **Notification Service**: 
+   - Notifies users about potential fraud or successful transactions.
+
+---
+
+## Architecture
+
+### Docker Compose Setup
+The application is containerized using **Docker Compose**. This allows easy orchestration of multi-container services. The `docker-compose.yml` file defines all the services, networks, and databases.
+
+![Docker Compose Setup](2.png)
+
+---
+
+### Communication and Kubernetics Deployment Diagram
+
+![Kubernetics Deployment Diagram](3.png)
+
+---
+
+### Steps to Run Locally:
+
+1. Build and run the Docker containers:
+   ```bash   
+   docker-compose up --build
+
+2. Check these server ports for Eureka-Server and Api-Gateway
+   ```bash
+   http://localhost:8761](http://localhost:8761
+   http://localhost:3001](http://localhost:3001
